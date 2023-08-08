@@ -61,7 +61,7 @@ function selectedBreed() {
     divCatInfo.innerHTML = createCatInfo(ourCat);
   }
 
-  loader.classList.add("hidden"); // Hide loader
+  loader.classList.add("hidden"); 
     
 
   // showSelectedBreed(selectedValue)
