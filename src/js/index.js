@@ -1,8 +1,11 @@
 import Notiflix from 'notiflix';
-import { fetchBreeds,showSelectedBreed,getInfoAboutCat} from "./cat-api";
+import SlimSelect from 'slim-select'
+import { fetchBreeds, showSelectedBreed, getInfoAboutCat } from "./cat-api";
+
+import "slim-select/dist/slimselect.css";
 
 
-const selectEl = document.querySelector('.breed-select');
+const selectEl = document.getElementById('single');
 const divCatInfo = document.querySelector('.cat-info');
 const loader = document.querySelector('.loader');
 const errorEl = document.querySelector('.error');
@@ -10,6 +13,8 @@ const errorEl = document.querySelector('.error');
 
 
 selectEl.addEventListener('change',selectedBreed);
+
+
 
 let storedBreeds = [];
 
@@ -24,6 +29,9 @@ function getBreeds() {
     .then((dataBreeds) => {
       selectEl.innerHTML = createBreeds(dataBreeds);
       storedBreeds = dataBreeds;
+       new SlimSelect({
+        select: selectEl,
+      });
     })
     .catch((err) => {
       Notiflix.Notify.failure(err);
@@ -36,7 +44,10 @@ function getBreeds() {
 }
 
 
+
+
 function createBreeds(arr) {
+  
     return arr.map(({name,id}) => ` <option value="${id}">${name}</option>`).join('');
 }
 
@@ -50,16 +61,23 @@ function createCatInfo(elCat) {
   }
 
 function selectedBreed() {
-
+  divCatInfo.innerHTML = '';
   const selectedValue = selectEl.value;
- loader.classList.remove("hidden"); 
+  loader.classList.remove("hidden"); 
+      errorEl.classList.add("hidden");
   
 
   const ourCat = storedBreeds.find((cat) => cat.id === selectedValue);
-
   if (ourCat !== undefined) {
-    divCatInfo.innerHTML = createCatInfo(ourCat);
+    try {
+      divCatInfo.innerHTML = createCatInfo(ourCat);
+    } catch (error) {
+      Notiflix.Notify.failure(error);
+      errorEl.classList.remove("hidden");
+
+    }
   }
+
 
   loader.classList.add("hidden"); 
     
